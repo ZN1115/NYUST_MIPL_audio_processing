@@ -15,13 +15,21 @@ int create_filename(char *filename, FILE **file_ptr);
 void write_wave_header(FILE **file_ptr, int available_data_size);
 void write_wave_data(FILE** src_file_ptr,FILE** dst_file_ptr);
 
+void pcm2wav(char *src_filename,char *dst_filename);
+
 int main(int argc, char *argv[])
 {
 	//filename
     char dst_file_name[] = "test.wav";
     char src_filename[] = "test6.pcm";
 
-	//open file resouce
+    pcm2wav(src_filename,dst_file_name);
+	
+    return 0;
+}
+
+void pcm2wav(char *src_filename,char *dst_file_name){
+    //open file resouce
     FILE *src_file_ptr, *dst_file_ptr;
     if (!openfile(src_filename, &src_file_ptr))	exit(1);
     if (!create_filename(dst_file_name, &dst_file_ptr))	exit(1);
@@ -37,7 +45,6 @@ int main(int argc, char *argv[])
 	
 	//finish info.
     printf("file convert done.\n");
-    return 0;
 }
 
 int create_filename(char *filename, FILE **file_ptr)
@@ -71,11 +78,11 @@ int get_file_size(FILE **file_ptr)
     return (int)size;
 }
 
-/********************************
-* WriteWavePCM() configuration: *
-* - 1 channels,                 *
-* - frequency 8000 Hz.          *
-********************************/
+/*************************************
+* write_wave_header() configuration: *
+* - 1 channels,                      *
+* - frequency 8000 Hz.               *
+**************************************/
 void write_wave_header(FILE **file_ptr, int available_data_size)
 {
     int file_length = available_data_size + 44 - 8;
