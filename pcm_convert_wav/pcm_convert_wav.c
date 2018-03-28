@@ -15,7 +15,7 @@ int create_filename(char *filename, FILE **file_ptr);
 void write_wave_header(FILE **file_ptr, int available_data_size);
 void write_wave_data(FILE** src_file_ptr,FILE** dst_file_ptr);
 
-void pcm2wav(char *src_filename,char *dst_filename);
+extern int pcm2wav(char *src_finetname,char *dst_filename);
 
 int main(int argc, char *argv[])
 {
@@ -23,28 +23,34 @@ int main(int argc, char *argv[])
     char dst_file_name[] = "test.wav";
     char src_filename[] = "test6.pcm";
 
-    pcm2wav(src_filename,dst_file_name);
+    if(!pcm2wav(src_filename,dst_file_name))
+        exit(1);
 	
     return 0;
 }
 
-void pcm2wav(char *src_filename,char *dst_file_name){
+int pcm2wav(char *src_filename,char *dst_file_name){
     //open file resouce
+    //printf("open file\n");
     FILE *src_file_ptr, *dst_file_ptr;
-    if (!openfile(src_filename, &src_file_ptr))	exit(1);
-    if (!create_filename(dst_file_name, &dst_file_ptr))	exit(1);
+    if (!openfile(src_filename, &src_file_ptr))	return FALSE;
+    if (!create_filename(dst_file_name, &dst_file_ptr))	return FALSE;
 
 	//convert file process
+    //printf("start convert process\n");
     int data_size = get_file_size(&src_file_ptr);
     write_wave_header(&dst_file_ptr, data_size);
     write_wave_data(&src_file_ptr,&dst_file_ptr);
 
-	//release file point    	
+	//release file point
+    //printf("release resouce\n");
     fclose(dst_file_ptr);
     fclose(src_file_ptr);
 	
 	//finish info.
-    printf("file convert done.\n");
+    //printf("file convert done.\n");
+
+    return TRUE;
 }
 
 int create_filename(char *filename, FILE **file_ptr)
